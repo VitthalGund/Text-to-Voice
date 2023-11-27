@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 const TextToVoice = () => {
 
@@ -15,10 +15,10 @@ const TextToVoice = () => {
     const resume = useRef<HTMLButtonElement>(null);
     const cancel = useRef<HTMLButtonElement>(null);
     const voicesList = useRef<HTMLSelectElement>(null);
-    const textInput = useRef<HTMLTextAreaElement>(null);
+    const [textInput, setTextInput] = useState("");
 
     // Initialize new SpeechSynthesisUtterance object
-    let speech = new SpeechSynthesisUtterance();
+    const speech = new SpeechSynthesisUtterance();
 
     // Set Speech Language
     speech.lang = "en";
@@ -36,7 +36,7 @@ const TextToVoice = () => {
         if (voicesList.current) {
             voices.forEach((voice: SpeechSynthesisVoice, i: number) => {
                 if (voicesList.current) {
-                    voicesList.current.options[i] = new Option(voice.name, i + "")
+                    voicesList.current.options[i] = new Option(voice.name, i + "", true, true)
                 }
             });
         }
@@ -81,34 +81,6 @@ const TextToVoice = () => {
         });
     }
 
-    start.current?.addEventListener("click", () => {
-        // Set the text property with the value of the textarea
-        if (textInput.current) {
-            speech.text = textInput.current.value;
-        }
-        // Start Speaking
-        window.speechSynthesis.speak(speech);
-    });
-
-    if (pause.current) {
-        pause.current.addEventListener("click", () => {
-            window.speechSynthesis.pause();
-        });
-    }
-
-    if (resume.current) {
-        resume.current.addEventListener("click", () => {
-            // Resume the paused speechSynthesis instance
-            window.speechSynthesis.resume();
-        });
-    }
-
-    if (cancel.current) {
-        cancel.current.addEventListener("click", () => {
-            // Cancel the speechSynthesis instance
-            window.speechSynthesis.cancel();
-        });
-    }
 
     return (
         <>
@@ -144,13 +116,37 @@ const TextToVoice = () => {
                     </div>
                 </div>
 
-                <textarea ref={textInput} value={textInput.current?.value} className="form-control bg-dark text-light mt-5" cols={30} rows={10} placeholder="Type here..."></textarea>
+                <textarea value={textInput} onChange={(e) => setTextInput(e.target.value)} className="form-control bg-dark text-light mt-5" cols={30} rows={10} placeholder="Type here..."></textarea>
 
                 <div className="mb-5 d-flex flex-wrap justify-content-center align-content-center">
-                    <button ref={start} id="start" className="btn btn-success mt-5 me-3">Start</button>
-                    <button ref={pause} id="pause" className="btn btn-warning mt-5 me-3">Pause</button>
-                    <button ref={resume} id="resume" className="btn btn-info mt-5 me-3">Resume</button>
-                    <button ref={cancel} id="cancel" className="btn btn-danger mt-5 me-3">Cancel</button>
+                    <button ref={start} id="start" className="btn btn-success mt-5 me-3"
+                        onClick={() => {
+                            // Set the text property with the value of the textarea
+                            speech.text = textInput;
+                            console.log(speech)
+                            // Start Speaking
+                            window.speechSynthesis.speak(speech);
+                        }}
+                    >Start</button>
+                    <button ref={pause}
+                        id="pause"
+                        className="btn btn-warning mt-5 me-3"
+                        onClick={() => {
+                            window.speechSynthesis.pause();
+                        }}
+                    >Pause</button>
+                    <button ref={resume} id="resume" className="btn btn-info mt-5 me-3"
+                        onClick={() => {
+                            // Resume the paused speechSynthesis instance
+                            window.speechSynthesis.resume();
+                        }}
+                    >Resume</button>
+                    <button ref={cancel} id="cancel" className="btn btn-danger mt-5 me-3"
+                        onClick={() => {
+                            // Cancel the speechSynthesis instance
+                            window.speechSynthesis.cancel();
+                        }}
+                    >Cancel</button>
                 </div>
             </div>
         </>
