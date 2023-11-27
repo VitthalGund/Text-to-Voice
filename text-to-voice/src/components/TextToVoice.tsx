@@ -81,14 +81,6 @@ const TextToVoice = () => {
         });
     }
 
-    // if (voicesList.current) {
-    //     voicesList.current.addEventListener("change", () => {
-    //         // On Voice change, use the value of the select menu (which is the index of the voice in the global voice array)
-    //         speech.voice = voices[voicesList.current?.selectedOptions.value];
-    //     });
-    // }
-
-
     start.current?.addEventListener("click", () => {
         // Set the text property with the value of the textarea
         if (textInput.current) {
