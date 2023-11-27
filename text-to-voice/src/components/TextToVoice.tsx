@@ -2,12 +2,12 @@ import { useRef, useState } from "react";
 
 const TextToVoice = () => {
 
-    const rate = useRef<HTMLInputElement>(null);
-    const rateLabel = useRef<HTMLInputElement>(null);
-    const volume = useRef<HTMLInputElement>(null);
-    const volumeLabel = useRef<HTMLInputElement>(null);
-    const pitch = useRef<HTMLInputElement>(null);
-    const pitchLabel = useRef<HTMLInputElement>(null);
+    const [rate, setRate] = useState(0);
+    const [rateLabel, setRateLabel] = useState(0);
+    const [volume, setVolume] = useState(0);
+    const [volumeLabel, setVolumeLabel] = useState(0);
+    const [pitch, setPitch] = useState(0);
+    const [pitchLabel, setPitchLabel] = useState(0);
 
 
     const start = useRef<HTMLButtonElement>(null);
@@ -23,7 +23,7 @@ const TextToVoice = () => {
     // Set Speech Language
     speech.lang = "en";
 
-    let voices: SpeechSynthesisVoice[] = []; // global array of available voices
+    let voices: SpeechSynthesisVoice[] = window.speechSynthesis.getVoices(); // global array of available voices
 
     window.speechSynthesis.onvoiceschanged = () => {
         // Get List of Voices
@@ -91,9 +91,8 @@ const TextToVoice = () => {
                 <select
                     ref={voicesList}
                     id="voicesList"
-                    onChange={() => {
-                        if (voicesList.current)
-                            speech.voice = voices[voicesList.current?.selectedIndex];
+                    onChange={(e) => {
+                        speech.voice = voices[e.currentTarget.selectedIndex];
                     }}
                     className="form-select bg-secondary text-light"
                 ></select>
@@ -101,18 +100,27 @@ const TextToVoice = () => {
                 <div className="d-flex mt-4 text-light flex-wrap flex-wrap">
                     <div className="m-auto">
                         <p className="lead">Volume</p>
-                        <input ref={volume} type="range" min="0" max="10" value={volume.current?.value} step="0.1" id="volume" />
-                        <span ref={volumeLabel} id="volume-label" className="ms-2">1</span>
+                        <input value={volume} type="range" min={0} max={10} step={0.1} id="volume" onChange={(e) => {
+                            speech.volume = volume;
+                            setVolume(e.target.valueAsNumber);
+                        }} />
+                        <span id="volume-label" className="ms-2">{volume}</span>
                     </div>
                     <div className="m-auto">
                         <p className="lead">Rate</p>
-                        <input ref={rate} type="range" min="0.1" max="10" value={rate.current?.value} id="rate" step="0.1" />
-                        <span ref={rateLabel} id="rate-label" className="ms-2">1</span>
+                        <input value={rate} type="range" min={0} max={10} onChange={(e) => {
+                            speech.rate = rate;
+                            setRate(e.target.valueAsNumber);
+                        }} id="rate" step={0.1} />
+                        <span id="rate-label" className="ms-2">{rate}</span>
                     </div>
                     <div className="m-auto">
                         <p className="lead">Pitch</p>
-                        <input ref={pitch} type="range" min="0" max="10" value={pitch.current?.value} step="0.1" id="pitch" />
-                        <span ref={pitchLabel} id="pitch-label" className="ms-2">1</span>
+                        <input value={pitch} type="range" min={0} max={10} onChange={(e) => {
+                            speech.pitch = pitch;
+                            setPitch(e.target.valueAsNumber);
+                        }} step={0.1} id="pitch" />
+                        <span id="pitch-label" className="ms-2">{pitch}</span>
                     </div>
                 </div>
 
@@ -123,7 +131,6 @@ const TextToVoice = () => {
                         onClick={() => {
                             // Set the text property with the value of the textarea
                             speech.text = textInput;
-                            console.log(speech)
                             // Start Speaking
                             window.speechSynthesis.speak(speech);
                         }}
