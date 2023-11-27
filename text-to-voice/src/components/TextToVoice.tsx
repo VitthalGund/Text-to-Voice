@@ -154,7 +154,7 @@ const TextToVoice = () => {
 
                 <textarea ref={textInput} value={textInput.current?.value} className="form-control bg-dark text-light mt-5" cols={30} rows={10} placeholder="Type here..."></textarea>
 
-                <div className="mb-5 d-flex flex-wrap">
+                <div className="mb-5 d-flex flex-wrap justify-content-center align-content-center">
                     <button ref={start} id="start" className="btn btn-success mt-5 me-3">Start</button>
                     <button ref={pause} id="pause" className="btn btn-warning mt-5 me-3">Pause</button>
                     <button ref={resume} id="resume" className="btn btn-info mt-5 me-3">Resume</button>
